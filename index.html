@@ -27,7 +27,7 @@
     <div id="root">
       <div class="loading-text">
         <div class="loader"></div>
-        <div>LOADING PROTOTYPE...</div>
+        <div>INITIALIZING PROTOTYPE...</div>
       </div>
     </div>
 
@@ -40,41 +40,29 @@
 import streamlit as st
 import time
 
-# --- 1. PAGE CONFIG (Wide Mode for better visuals) ---
+# --- 1. PAGE CONFIG ---
 st.set_page_config(
     page_title="LogiSustainability Assistant",
     page_icon="🌱",
     layout="wide"
 )
 
-# --- 2. CUSTOM STYLING (CSS) ---
-# This hides the default menu and adds "Logitech-ish" styling
+# --- 2. CUSTOM STYLING ---
 st.markdown("""
     <style>
-    /* Import a nice font */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-    
-    /* Header Styling */
     h1 { color: #2d3436; font-weight: 700; letter-spacing: -1px; }
     h3 { color: #00B8FC; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; font-weight: 700; }
-    
-    /* Chat Input Styling */
     .stChatInput { border-radius: 15px !important; border: 1px solid #dfe6e9; }
-    
-    /* Hide Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
-    /* Add padding to the top */
     .block-container { padding-top: 2rem; max-width: 1000px; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. HERO SECTION (Visuals) ---
-# We use columns to put text on left, image on right
+# --- 3. HERO SECTION ---
 col1, col2 = st.columns([3, 2])
 
 with col1:
@@ -85,49 +73,48 @@ with col1:
     This prototype demonstrates how AI can help R&D teams instantly navigate the **2025 Impact Report** to find LCA data, CarbonClarity™ metrics, and material targets.
     """)
     
-    # Quick "Status" metrics to look professional
     m1, m2, m3 = st.columns(3)
     m1.metric("Report Year", "2025", "Latest")
     m2.metric("Data Source", "Logitech DfS", "Verified")
     m3.metric("Model Mode", "RAG Inference", "Simulated")
 
 with col2:
-    # This is a high-quality image from Unsplash (Tech + Nature theme)
     st.image("https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop", 
              caption="Visualizing Global Impact Data", use_container_width=True)
 
 st.divider()
 
-# --- 4. SIMULATED KNOWLEDGE BASE (The Brain) ---
+# --- 4. SIMULATED KNOWLEDGE BASE ---
+# NOTE: No backticks used inside these strings to prevent JS errors
 knowledge_base = {
     "carbonclarity": (
-        "### 🏷️ CarbonClarity™ Update (2025)\n\n"
-        "**The Goal:** Radical Transparency.\n"
+        "### 🏷️ CarbonClarity™ Update (2025)\\n\\n"
+        "**The Goal:** Radical Transparency.\\n"
         "We have expanded our carbon labeling program to include the entire enterprise portfolio. "
-        "Engineers can now access the `kg CO2e` impact for every component in the BOM (Bill of Materials). "
+        "Engineers can now access the 'kg CO2e' impact for every component in the BOM (Bill of Materials). "
         "This allows for real-time carbon trade-off decisions during the prototyping phase."
     ),
     "next life plastics": (
-        "### ♻️ Next Life Plastics (PCR)\n\n"
-        "**The Goal:** Circularity at Scale.\n"
+        "### ♻️ Next Life Plastics (PCR)\\n\\n"
+        "**The Goal:** Circularity at Scale.\\n"
         "In 2025, Logitech aims to use >50% Post-Consumer Recycled (PCR) plastic in all mouse and keyboard lines. "
         "Current engineering guidelines prioritize recycled ABS and Polycarbonate over virgin fossil-fuel plastics "
         "to lower the 'Material Extraction' carbon footprint."
     ),
     "dfs": (
-        "### ⚙️ Design for Sustainability (DfS)\n\n"
-        "**The Goal:** Low-Power, High-Impact.\n"
+        "### ⚙️ Design for Sustainability (DfS)\\n\\n"
+        "**The Goal:** Low-Power, High-Impact.\\n"
         "DfS principles are now mandatory in the NPI (New Product Introduction) process. "
-        "Key focus areas for 2025:\n"
-        "* **Low-Power ICs:** Selecting microcontrollers with ultra-low sleep currents.\n"
+        "Key focus areas for 2025:\\n"
+        "* **Low-Power ICs:** Selecting microcontrollers with ultra-low sleep currents.\\n"
         "* **Dematerialization:** Reducing PCB size and removing unnecessary weight."
     ),
     "default": (
-        "**System Status: Ready.**\n\n"
+        "**System Status: Ready.**\\n\\n"
         "I am currently connected to the **2025 Impact Report** database (Simulated). "
-        "I can retrieve technical targets for:\n"
-        "* **CarbonClarity™**\n"
-        "* **Next Life Plastics**\n"
+        "I can retrieve technical targets for:\\n"
+        "* **CarbonClarity™**\\n"
+        "* **Next Life Plastics**\\n"
         "* **Design for Sustainability (DfS)**"
     )
 }
@@ -145,12 +132,10 @@ if "messages" not in st.session_state:
         {"role": "assistant", "content": "Hello. I'm your DfS Assistant. Ask me about **CarbonClarity** or **Next Life Plastics** targets."}
     ]
 
-# Display chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Handle Input
 if prompt := st.chat_input("Search the 2025 Impact Report..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -159,11 +144,10 @@ if prompt := st.chat_input("Search the 2025 Impact Report..."):
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         with st.spinner("Analyzing vectors..."):
-            time.sleep(1.0) # Fake processing time
+            time.sleep(1.0) 
         
         response_text = get_simulated_response(prompt)
         
-        # Typing effect
         full_response = ""
         for chunk in response_text.split():
             full_response += chunk + " "
