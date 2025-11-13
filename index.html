@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Logitech Sustainability Assistant (2025 Prototype)</title>
+    <meta name="description" content="Concept Prototype for querying Logitech's 2025 Impact Report" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.54.0/build/stlite.js"></script>
+    
+    <style>
+      body { margin: 0; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f6; }
+      #root { height: 100vh; }
+      .loading-text { 
+        display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        height: 100vh; color: #444; 
+      }
+      .loader {
+        border: 4px solid #f3f3f3; border-top: 4px solid #00B8FC; border-radius: 50%;
+        width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="loading-text">
+        <div class="loader"></div>
+        <div>Initializing Prototype Interface...</div>
+      </div>
+    </div>
+
+    <script>
+      stlite.mount({
+        requirements: ["streamlit"],
+        entrypoint: "app.py",
+        files: {
+          "app.py": `
+import streamlit as st
+import time
+
+# --- PAGE CONFIGURATION ---
+st.set_page_config(
+    page_title="LogiSustainability Assistant",
+    page_icon="🌱",
+    layout="centered"
+)
+
+# --- CUSTOM CSS ---
+st.markdown("""
+    <style>
+    .stChatInput { border-radius: 20px !important; }
+    .block-container { padding-top: 2.5rem; }
+    h1 { font-family: 'Helvetica Neue', sans-serif; font-weight: 700; color: #2d3436; }
+    .caption { color: #636e72; font-size: 0.9rem; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- HEADER ---
+st.title("🌱 Logitech Sustainability Assistant")
+st.markdown("""
+    <div class='caption'>
+        <b>Concept Prototype | DfS Engineering Tool</b><br>
+        This interface demonstrates an AI-powered workflow for querying the <i>2025 Impact Report</i>.
+        <br><i>Note: This is a frontend simulation using static data for demonstration purposes.</i>
+    </div>
+""", unsafe_allow_html=True)
+st.divider()
+
+# --- SIMULATED RAG KNOWLEDGE BASE ---
+# Updated to reflect 2025 Context
+knowledge_base = {
+    "carbonclarity": (
+        "**CarbonClarity™** continues to be our standard for carbon transparency. "
+        "In the 2025 report, we highlight our expanded library of carbon-labeled products. "
+        "This data helps engineers and consumers track the CO2e reduction progress across the entire portfolio. "
+        "[Source: 2025 Impact Report, Section: Carbon Transparency]"
+    ),
+    "next life plastics": (
+        "**Next Life Plastics** (PCR) remains a primary driver for circularity in 2025. "
+        "Our latest targets focus on increasing the percentage of recycled content in high-volume peripherals. "
+        "Switching to PCR significantly reduces the 'material extraction' carbon footprint compared to virgin ABS/polycarbonate. "
+        "[Source: 2025 Impact Report, Section: Circularity]"
+    ),
+    "dfs": (
+        "**Design for Sustainability (DfS)** principles are now deeply integrated into our IC and PCB selection process. "
+        "The 2025 report emphasizes 'low-power by design' to reduce use-phase emissions, alongside material optimization "
+        "using internal Life Cycle Assessment (LCA) data. "
+        "[Source: 2025 Impact Report, Section: Sustainable Design]"
+    ),
+    "default": (
+        "I am a prototype configured to demonstrate queries about **CarbonClarity**, **Next Life Plastics**, or **DfS** "
+        "based on the 2025 Impact Report structure. Try asking: 'What is the goal of Next Life Plastics?'"
+    )
+}
+
+def get_simulated_response(prompt):
+    p = prompt.lower()
+    if "carbon" in p or "clarity" in p: return knowledge_base["carbonclarity"]
+    if "plastic" in p or "recycle" in p or "next life" in p: return knowledge_base["next life plastics"]
+    if "dfs" in p or "design" in p or "lca" in p: return knowledge_base["dfs"]
+    return knowledge_base["default"]
+
+# --- CHAT LOGIC ---
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Welcome. I can help you locate sustainability metrics for 'CarbonClarity' or 'Next Life Plastics' in the 2025 Report. What do you need?"}
+    ]
+
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+if prompt := st.chat_input("Ex: Tell me about CarbonClarity in 2025..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        # Simulate "Thinking" Latency
+        with st.spinner("Retrieving data from 2025 Report..."):
+            time.sleep(1.0) 
+        
+        # Simulate Streaming Response
+        response_text = get_simulated_response(prompt)
+        full_response = ""
+        for chunk in response_text.split():
+            full_response += chunk + " "
+            time.sleep(0.05)
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
+    
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
+`
+        }
+      },
+      document.getElementById("root")
+    );
+    </script>
+  </body>
+</html>
