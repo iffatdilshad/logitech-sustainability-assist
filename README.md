@@ -13,8 +13,3 @@ This project demonstrates an **AI-powered "Chat with Data" interface**. It model
 * Help provide **Easier access** to the 2025 Impact Report for non-technical stakeholders.
 
 ---
-
-## 🛠️ Tech Stack
-* **Frontend:** Streamlit (Python)
-* **Runtime:** Pyodide (Client-side WebAssembly)
-* **Architecture:** Serverless Frontend Prototype (Simulated RAG)
